@@ -468,6 +468,35 @@
             gap: 20px;
             flex-wrap: wrap;
         }
+
+        /* Press & Hold button styles */
+        .press-hold-btn {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            border-radius: 60px;
+            box-shadow: 0 5px 0 #b30f2e;
+            cursor: pointer;
+            transition: all 0.1s;
+            font-weight: bold;
+            letter-spacing: 2px;
+            width: 80%;
+            max-width: 300px;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .press-hold-btn:active {
+            transform: scale(0.95);
+            background: #4CAF50;
+        }
+
+        .press-hold-btn.listening {
+            background: #4CAF50;
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -718,28 +747,35 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px;" onclick="goToValentinesDay()">Next Day →</button>
             </div>
 
-            <!-- STAGE 20: Valentine's Day Q&A - FIXED with working buttons -->
+            <!-- STAGE 20: Valentine's Day Q&A - FIXED with Press & Hold button -->
             <div id="stage20" class="stage" style="background: linear-gradient(145deg, #ff4d6d, #b30f2e);">
                 <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
-                <button id="modeToggle" class="mode-toggle" onclick="toggleMode()">🎤 Voice Mode</button>
+                <button id="modeToggle" class="mode-toggle" onclick="toggleMode()">👆 Button Mode</button>
                 
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
                     <div id="questionBox" class="message-box" style="width: 100%;">
                         <h2 id="questionText">Do you oath to be truthful with your answer?</h2>
-                        <p id="answerHint" style="color: #666; margin: 10px 0;">Say: "yes" or "no"</p>
+                        <p id="answerHint" style="color: #666; margin: 10px 0;">Press and hold the button below to speak your answer</p>
                         
                         <!-- Voice indicator -->
-                        <div id="voiceIndicator" style="color: #ff4d6d; margin: 10px; font-weight: bold;">🎤 Listening... (click the toggle button above to switch to manual mode)</div>
+                        <div id="voiceIndicator" style="color: #ff4d6d; margin: 10px; font-weight: bold;">🎤 Ready... (press and hold to speak)</div>
+                        
+                        <!-- Press & Hold to Speak Button -->
+                        <button id="pressToSpeakBtn" 
+                                class="press-hold-btn"
+                                onmousedown="startListening()" 
+                                onmouseup="stopListening()" 
+                                onmouseleave="stopListening()"
+                                ontouchstart="startListening()" 
+                                ontouchend="stopListening()">
+                            🎤 PRESS & HOLD TO SPEAK
+                        </button>
                         
                         <!-- Button mode container - initially hidden -->
                         <div id="buttonModeContainer" style="display: none;">
                             <div class="button-mode-container">
-                                <div class="answer-row" id="answerRow1">
-                                    <!-- Buttons will be dynamically populated -->
-                                </div>
-                                <div class="answer-row" id="answerRow2">
-                                    <!-- Buttons will be dynamically populated -->
-                                </div>
+                                <div class="answer-row" id="answerRow1"></div>
+                                <div class="answer-row" id="answerRow2"></div>
                             </div>
                         </div>
                     </div>
@@ -1194,7 +1230,6 @@
                         // Start in voice mode by default
                         voiceMode = true;
                         updateButtonMode();
-                        startVoiceRecognition();
                     }
                 }, 100);
             }, 1000);
@@ -1303,7 +1338,104 @@
                 }
                 voiceMode = true;
                 updateButtonMode();
-                startVoiceRecognition();
+            }
+        }
+        
+        // Press & Hold Voice Functions
+        function startListening() {
+            if (!voiceMode) return;
+            
+            // Pause music
+            if (song3) {
+                song3.pause();
+            }
+            
+            // Visual feedback
+            let btn = document.getElementById('pressToSpeakBtn');
+            btn.classList.add('listening');
+            btn.textContent = '🎤 LISTENING... SPEAK NOW';
+            
+            document.getElementById('voiceIndicator').innerHTML = '🎤 Listening... (speak now)';
+            
+            // Start voice recognition
+            startVoiceRecognitionOnce();
+        }
+
+        function stopListening() {
+            if (!voiceMode) return;
+            
+            // Resume music
+            if (song3) {
+                song3.play().catch(e => console.log("Audio play failed:", e));
+            }
+            
+            // Reset button
+            let btn = document.getElementById('pressToSpeakBtn');
+            btn.classList.remove('listening');
+            btn.textContent = '🎤 PRESS & HOLD TO SPEAK';
+            
+            document.getElementById('voiceIndicator').innerHTML = '🎤 Ready... (press and hold to speak)';
+            
+            // Stop voice recognition
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch (e) {}
+            }
+        }
+
+        function startVoiceRecognitionOnce() {
+            if (!voiceMode) return;
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Voice recognition not supported in this browser. Please use button mode.');
+                voiceMode = false;
+                updateButtonMode();
+                return;
+            }
+            
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                
+                recognition.onresult = function(event) {
+                    let transcript = event.results[0][0].transcript.toLowerCase().trim();
+                    console.log("Heard:", transcript);
+                    document.getElementById('voiceIndicator').innerHTML = '🎤 Heard: "' + transcript + '"';
+                    
+                    // Process the transcript
+                    handleVoiceInput(transcript);
+                };
+                
+                recognition.onerror = function(event) {
+                    console.log("Voice error:", event.error);
+                    if (event.error === 'no-speech') {
+                        document.getElementById('voiceIndicator').innerHTML = '🎤 No speech detected, try again...';
+                    } else if (event.error === 'not-allowed') {
+                        document.getElementById('voiceIndicator').innerHTML = '❌ Microphone access denied';
+                        // Auto-switch to button mode
+                        setTimeout(() => {
+                            if (voiceMode) {
+                                voiceMode = false;
+                                updateButtonMode();
+                            }
+                        }, 2000);
+                    }
+                };
+                
+                recognition.onend = function() {
+                    console.log("Recognition ended");
+                    // Don't auto-restart - user needs to press button again
+                };
+                
+                recognition.start();
+                
+            } catch (e) {
+                console.error("Voice recognition error:", e);
             }
         }
         
@@ -1312,20 +1444,14 @@
             voiceMode = !voiceMode;
             updateButtonMode();
             
-            if(voiceMode) {
-                // Switching to voice mode
-                if(recognition) {
-                    try { recognition.stop(); } catch(e) {}
-                }
-                startVoiceRecognition();
-            } else {
-                // Switching to button mode
-                if(recognition) {
-                    try { 
-                        recognition.stop();
-                        recognitionActive = false;
-                    } catch(e) {}
-                }
+            // Stop any ongoing recognition
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+            }
+            
+            // Resume music if it was paused
+            if (song3 && voiceMode) {
+                song3.play().catch(e => console.log("Audio play failed:", e));
             }
         }
         
@@ -1333,18 +1459,36 @@
             let modeToggle = document.getElementById('modeToggle');
             let voiceIndicator = document.getElementById('voiceIndicator');
             let buttonContainer = document.getElementById('buttonModeContainer');
+            let pressBtn = document.getElementById('pressToSpeakBtn');
             
-            if(voiceMode) {
-                modeToggle.textContent = '🎤 Voice Mode (Active)';
-                modeToggle.style.background = '#ff4d6d';
-                if(voiceIndicator) voiceIndicator.style.display = 'block';
-                if(buttonContainer) buttonContainer.style.display = 'none';
-            } else {
-                modeToggle.textContent = '👆 Button Mode (Active)';
+            if (voiceMode) {
+                modeToggle.textContent = '👆 Switch to Button Mode';
                 modeToggle.style.background = '#4CAF50';
-                if(voiceIndicator) voiceIndicator.style.display = 'none';
-                if(buttonContainer) buttonContainer.style.display = 'block';
-                populateButtons();
+                if (voiceIndicator) {
+                    voiceIndicator.style.display = 'block';
+                    voiceIndicator.innerHTML = '🎤 Ready... (press and hold to speak)';
+                }
+                if (buttonContainer) buttonContainer.style.display = 'none';
+                if (pressBtn) pressBtn.style.display = 'block';
+                
+                // Resume music
+                if (song3) {
+                    song3.play().catch(e => console.log("Audio play failed:", e));
+                }
+            } else {
+                modeToggle.textContent = '🎤 Switch to Voice Mode';
+                modeToggle.style.background = '#ff4d6d';
+                if (voiceIndicator) voiceIndicator.style.display = 'none';
+                if (buttonContainer) {
+                    buttonContainer.style.display = 'block';
+                    populateButtons();
+                }
+                if (pressBtn) pressBtn.style.display = 'none';
+                
+                // Ensure music is playing for button mode
+                if (song3) {
+                    song3.play().catch(e => console.log("Audio play failed:", e));
+                }
             }
         }
         
@@ -1407,93 +1551,6 @@
             }
         }
         
-        function startVoiceRecognition() {
-            if(!voiceMode) return;
-            
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                // Voice not supported, auto-switch to button mode
-                voiceMode = false;
-                updateButtonMode();
-                return;
-            }
-            
-            try {
-                // Stop any existing recognition
-                if(recognition) {
-                    try { recognition.stop(); } catch(e) {}
-                }
-                
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = false;
-                recognition.lang = 'en-US';
-                recognition.interimResults = false;
-                recognition.maxAlternatives = 1;
-                
-                recognition.onstart = function() {
-                    recognitionActive = true;
-                    document.getElementById('voiceIndicator').innerHTML = '🎤 Listening... (speak now)';
-                };
-                
-                recognition.onresult = function(event) {
-                    let transcript = event.results[0][0].transcript.toLowerCase().trim();
-                    console.log("Heard:", transcript);
-                    document.getElementById('voiceIndicator').innerHTML = '🎤 Heard: "' + transcript + '"';
-                    
-                    // Process the transcript
-                    handleVoiceInput(transcript);
-                    
-                    // Restart listening after a short delay
-                    setTimeout(() => {
-                        if(voiceMode && recognitionActive) {
-                            try { recognition.start(); } catch(e) {}
-                        }
-                    }, 1000);
-                };
-                
-                recognition.onerror = function(event) {
-                    console.log("Voice error:", event.error);
-                    if(event.error === 'not-allowed') {
-                        document.getElementById('voiceIndicator').innerHTML = '❌ Microphone access denied. Use button mode.';
-                        // Auto-switch to button mode after 3 seconds
-                        setTimeout(() => {
-                            if(voiceMode) {
-                                voiceMode = false;
-                                updateButtonMode();
-                            }
-                        }, 3000);
-                    } else if(event.error === 'no-speech') {
-                        document.getElementById('voiceIndicator').innerHTML = '🎤 No speech detected, try again...';
-                        // Try again
-                        setTimeout(() => {
-                            if(voiceMode && recognitionActive) {
-                                try { recognition.start(); } catch(e) {}
-                            }
-                        }, 500);
-                    }
-                };
-                
-                recognition.onend = function() {
-                    console.log("Recognition ended");
-                    // Restart if still in voice mode
-                    if(voiceMode && recognitionActive && currentStage === 20 && currentQuestion < questions.length) {
-                        setTimeout(() => {
-                            try { recognition.start(); } catch(e) {}
-                        }, 500);
-                    }
-                };
-                
-                // Start recognition
-                recognition.start();
-                
-            } catch(e) {
-                console.error("Voice recognition error:", e);
-                // Fallback to button mode
-                voiceMode = false;
-                updateButtonMode();
-            }
-        }
-        
         function handleVoiceInput(input) {
             if(!voiceMode) return;
             
@@ -1536,7 +1593,6 @@
             // Stop recognition for a moment
             if(recognition && voiceMode) {
                 try { recognition.stop(); } catch(e) {}
-                recognitionActive = false;
             }
             
             if(answer === 'yes' && currentQuestion === 0) {
@@ -1584,16 +1640,6 @@
                 // Update buttons if in button mode
                 if(!voiceMode) {
                     populateButtons();
-                }
-                
-                // Restart voice recognition if in voice mode
-                if(voiceMode) {
-                    recognitionActive = true;
-                    setTimeout(() => {
-                        if(voiceMode && recognition) {
-                            try { recognition.start(); } catch(e) {}
-                        }
-                    }, 500);
                 }
             }
         }
