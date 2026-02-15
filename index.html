@@ -52,115 +52,98 @@
             display: none;
             flex-direction: column;
             padding: 20px;
-            background: linear-gradient(145deg, #ffd1dc, #ffe4e1, #fff0f5) !important;
-            background-size: 400% 400% !important;
-            animation: romanticGlow 15s ease infinite !important;
         }
 
         .stage.active {
             display: flex;
         }
 
-        /* Romantic glow animation */
-        @keyframes romanticGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Dark theme stages */
-        #stage1, #stage19, #stage20, #stage21 {
-            background: linear-gradient(145deg, #1a1a2e, #2a1a2e, #16213e) !important;
-        }
-
-        /* Floating hearts background */
-        .heart-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .heart-bg span {
-            position: absolute;
-            font-size: 24px;
-            opacity: 0.15;
-            animation: floatHeart var(--duration) ease-in-out infinite;
-            color: #ff4d6d;
-        }
-
-        @keyframes floatHeart {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(10deg); }
-        }
-
-        /* Ensure content is above background */
-        .stage > *:not(.heart-bg):not(.cloud-overlay) {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* For background images - show ENTIRE image without cropping */
+        /* ALL images auto-resize to fit device */
         .stage[style*="background-image"] {
-            background-size: contain !important;
+            background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
         }
 
-        /* For videos - show ENTIRE video without cropping */
-        .stage video {
+        /* ONLY for WOS image - show full image */
+        #stage9 {
+            background-size: contain !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-color: black;
+        }
+
+        /* ONLY for Messages video - show full video */
+        #stage12 video {
+            object-fit: contain !important;
+            background: black;
             width: 100%;
             height: 100%;
-            object-fit: contain;
             position: absolute;
             top: 0;
             left: 0;
-            background: black;
-            z-index: 2;
+            z-index: 1;
         }
 
-        /* Special handling for map videos - they should fill screen */
+        /* Map videos fill screen */
         #stage2 video, #stage6 video {
+            object-fit: cover !important;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Heartbeat image */
+        #stage11 .heartbeat-image {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-        }
-
-        /* Images inside stages */
-        .stage img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-        }
-
-        /* Heartbeat image specific */
-        .heartbeat-image {
+            top: 0;
+            left: 0;
             animation: heartbeat 1.2s ease-in-out infinite;
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
 
         @keyframes heartbeat {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            25% { transform: translate(-50%, -50%) scale(1.08); }
-            35% { transform: translate(-50%, -50%) scale(1); }
-            45% { transform: translate(-50%, -50%) scale(1.04); }
-            55% { transform: translate(-50%, -50%) scale(1); }
-            100% { transform: translate(-50%, -50%) scale(1); }
+            0% { transform: scale(1); }
+            25% { transform: scale(1.08); }
+            35% { transform: scale(1); }
+            45% { transform: scale(1.04); }
+            55% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Restart button */
+        .restart-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border: 2px solid #ff4d6d;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #ff4d6d;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(255, 77, 109, 0.3);
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .restart-btn:active {
+            transform: scale(0.95);
         }
 
         /* Message boxes */
@@ -417,7 +400,6 @@
             .puzzle-letter { width: 35px; height: 35px; font-size: 18px; }
         }
 
-        /* Button sizing */
         button {
             min-height: 44px;
             min-width: 44px;
@@ -442,20 +424,9 @@
             <div id="cloudOverlay" class="cloud-overlay"></div>
 
             <!-- STAGE 1: Confrontation -->
-            <div id="stage1" class="stage active">
-                <!-- Romantic floating hearts -->
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                    <span style="top: 30%; left: 30%; --duration: 9s;">💗</span>
-                    <span style="top: 70%; right: 5%; --duration: 11s;">💓</span>
-                    <span style="bottom: 40%; left: 15%; --duration: 13s;">💘</span>
-                    <span style="top: 80%; right: 20%; --duration: 7s;">💝</span>
-                </div>
-                
-                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; z-index: 10;">
+            <div id="stage1" class="stage active" style="background: linear-gradient(145deg, #1a1a2e, #16213e);">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
                     <h1 class="title" style="font-size: 28px; margin-bottom: 40px; color: white;">This is the Valentine's Day 2026 sweet gift to my lovely Anabel by her lovely Harsh</h1>
                     <h2 class="title" style="font-size: 48px; margin-bottom: 60px; color: #ff4d6d; text-shadow: 0 0 20px #ff4d6d;">Are you ready?</h2>
                     <button class="btn" onclick="startGame()">YES, I'M READY ❤️</button>
@@ -464,12 +435,7 @@
 
             <!-- STAGE 2: World Map zoom Spain -->
             <div id="stage2" class="stage">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <video autoplay muted onended="cloudTransition(2, 4)">
                     <source src="images/2-world-map.mp4" type="video/mp4">
                 </video>
@@ -482,16 +448,13 @@
             </div>
 
             <!-- STAGE 3: Cloud cover -->
-            <div id="stage3" class="stage" style="background: white !important;"></div>
+            <div id="stage3" class="stage" style="background: white;">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+            </div>
 
             <!-- STAGE 4: Ana pic -->
             <div id="stage4" class="stage" style="background-image: url('images/4-ana-pixel.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
                     <div class="message-box" id="anaMessageBox" style="display: none;">
                         <p id="anaMessage">My beautiful Ana... You are the reason my world is colorful. Every day with you feels like a dream I never want to wake up from. I love you! ❤️</p>
@@ -503,16 +466,13 @@
             </div>
 
             <!-- STAGE 5: Cloud cover 2 -->
-            <div id="stage5" class="stage" style="background: white !important;"></div>
+            <div id="stage5" class="stage" style="background: white;">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+            </div>
 
             <!-- STAGE 6: India map -->
             <div id="stage6" class="stage">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <video autoplay muted onended="cloudTransition(6, 8)">
                     <source src="images/5-india-map.mp4" type="video/mp4">
                 </video>
@@ -525,16 +485,13 @@
             </div>
 
             <!-- STAGE 7: Cloud cover 3 -->
-            <div id="stage7" class="stage" style="background: white !important;"></div>
+            <div id="stage7" class="stage" style="background: white;">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+            </div>
 
             <!-- STAGE 8: Harsh pic -->
             <div id="stage8" class="stage" style="background-image: url('images/7-harsh-pixel.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
                     <div class="message-box" id="harshMessageBox" style="display: none;">
                         <p id="harshMessage">Your Harsh... The man who crossed oceans (virtually) to find you. You are my greatest adventure. I love you, Anabel! 💕</p>
@@ -545,36 +502,21 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(8)">Continue</button>
             </div>
 
-            <!-- STAGE 9: WOS image -->
-            <div id="stage9" class="stage" style="background-image: url('images/8-wos.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+            <!-- STAGE 9: WOS image - FULL SIZE (CONTAIN) -->
+            <div id="stage9" class="stage" style="background-image: url('images/8-wos.png'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: black;">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(9)">Continue</button>
             </div>
 
             <!-- STAGE 10: Batman imagine -->
             <div id="stage10" class="stage" style="background-image: url('images/9-batman.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(10)">Continue</button>
             </div>
 
             <!-- STAGE 11: Heartbeat -->
             <div id="stage11" class="stage">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <img src="images/12-heartbeat.png" class="heartbeat-image" alt="Heartbeat">
                 <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center; z-index: 20;">
                     <h1 class="title" style="font-size: 36px; color: white; text-shadow: 0 0 20px red; background: rgba(0,0,0,0.3); display: inline-block; padding: 10px 30px; border-radius: 50px;">NO GOING BACK</h1>
@@ -582,15 +524,10 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index:20;" onclick="nextStage(11)">Continue</button>
             </div>
 
-            <!-- STAGE 12: Messages slideshow -->
+            <!-- STAGE 12: Messages slideshow - FULL VIDEO (CONTAIN) -->
             <div id="stage12" class="stage">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
-                <video autoplay muted loop style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2;">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <video autoplay muted loop style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: black; z-index: 1;">
                     <source src="images/13-messages-bg.mp4" type="video/mp4">
                 </video>
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 10;">
@@ -607,12 +544,7 @@
 
             <!-- STAGE 13: Rose Day -->
             <div id="stage13" class="stage" style="background-image: url('images/rose-day/lavender-empty.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center; z-index: 50;">
                     <button class="btn" id="waterBtn" onclick="waterFlowers()">💧 Water them</button>
                 </div>
@@ -628,12 +560,7 @@
 
             <!-- STAGE 14: Propose Day -->
             <div id="stage14" class="stage" style="background-image: url('images/propose-day/propose.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <!-- Messages in corners only -->
                 <div id="messageBox1" class="floating-message" style="top: 10%; left: 5%;" onclick="expandMessage(1)">"hey you are....."</div>
                 <div id="messageBox2" class="floating-message" style="top: 10%; right: 5%;" onclick="expandMessage(2)">"i remember when....."</div>
@@ -650,13 +577,8 @@
             </div>
 
             <!-- STAGE 15: Chocolate Day -->
-            <div id="stage15" class="stage" style="background: #fff0f5 !important;">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+            <div id="stage15" class="stage" style="background: #fff0f5;">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div class="grid-3x3" id="chocolateGrid"></div>
                 <div id="chocoMessageBox" class="message-box" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 200;">
                     <p id="chocoMessage"></p>
@@ -667,12 +589,7 @@
 
             <!-- STAGE 16: Teddy Day -->
             <div id="stage16" class="stage" style="background-image: url('images/teddy-day/teddy.png');">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div class="word-puzzle">
                     <h3 style="color: white; text-align: center;">4 _ _ _ _</h3>
                     <div class="puzzle-input">
@@ -684,7 +601,7 @@
                 </div>
                 
                 <div id="teddyVideo" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                    <video loop autoplay muted>
+                    <video loop autoplay muted style="object-fit: cover; width: 100%; height: 100%;">
                         <source src="images/teddy-day/teddy-video.mp4" type="video/mp4">
                     </video>
                 </div>
@@ -696,12 +613,7 @@
 
             <!-- STAGE 17: Promise Day - Tap image -->
             <div id="stage17" class="stage" style="background-image: url('images/promise-day/promise.png'); cursor: pointer;">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                     <div class="message-box" id="promiseMessageBox" style="display: none;">
                         <p id="promiseText"></p>
@@ -713,12 +625,7 @@
 
             <!-- STAGE 18: Hug Day - Anonymous tapping -->
             <div id="stage18" class="stage" style="background-image: url('images/hug-day/hug.png'); cursor: pointer;">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s;">💖</span>
-                </div>
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center; z-index: 10;">
                     <p style="color: white; margin-bottom: 20px; background: rgba(255,77,109,0.7); padding: 10px; border-radius: 20px; display: inline-block;" id="hugCounter">Tap the image for hugs! 🤗</p>
                 </div>
@@ -733,13 +640,8 @@
             </div>
 
             <!-- STAGE 19: Kiss Day -->
-            <div id="stage19" class="stage">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s; opacity: 0.2;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s; opacity: 0.2;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s; opacity: 0.2;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s; opacity: 0.2;">💖</span>
-                </div>
+            <div id="stage19" class="stage" style="background: linear-gradient(145deg, #1a1a2e, #16213e);">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <div style="flex:1; display: flex; justify-content: center; align-items: center;">
                     <h1 class="shiny-flashing">LOOK AT ME</h1>
                 </div>
@@ -747,13 +649,8 @@
             </div>
 
             <!-- STAGE 20: Valentine's Day Q&A -->
-            <div id="stage20" class="stage">
-                <div class="heart-bg">
-                    <span style="top: 5%; left: 10%; --duration: 8s; opacity: 0.2;">❤️</span>
-                    <span style="top: 15%; right: 15%; --duration: 12s; opacity: 0.2;">💕</span>
-                    <span style="bottom: 20%; left: 20%; --duration: 10s; opacity: 0.2;">❤️</span>
-                    <span style="bottom: 10%; right: 25%; --duration: 14s; opacity: 0.2;">💖</span>
-                </div>
+            <div id="stage20" class="stage" style="background: linear-gradient(145deg, #ff4d6d, #b30f2e);">
+                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
                 <button id="modeToggle" class="mode-toggle" onclick="toggleMode()">🎤 Voice Mode</button>
                 
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
@@ -1173,6 +1070,64 @@
             else if(day === 18) { goToStage(19); }
         }
         
+        // Restart current day
+        function restartCurrentDay() {
+            let currentDay = currentStage;
+            
+            // Reset based on current stage
+            if(currentDay === 13) { // Rose Day
+                roseCount = 0;
+                document.getElementById('stage13').style.backgroundImage = "url('images/rose-day/lavender-empty.png')";
+                document.getElementById('waterBtn').style.display = 'block';
+                document.getElementById('goldenRibbon').style.display = 'none';
+                document.getElementById('nextDayBtn').style.display = 'none';
+                document.getElementById('rosePopup').style.display = 'none';
+            }
+            else if(currentDay === 14) { // Propose Day
+                document.getElementById('expandedMessageBox').style.display = 'none';
+            }
+            else if(currentDay === 15) { // Chocolate Day
+                initChocolateDay();
+                document.getElementById('chocoMessageBox').style.display = 'none';
+            }
+            else if(currentDay === 16) { // Teddy Day
+                document.getElementById('stage16').style.backgroundImage = "url('images/teddy-day/teddy.png')";
+                document.getElementById('teddyVideo').style.display = 'none';
+                document.getElementById('floatingMessages').style.display = 'none';
+                document.getElementById('letter1').value = '';
+                document.getElementById('letter2').value = '';
+                document.getElementById('letter3').value = '';
+                document.getElementById('letter4').value = '';
+            }
+            else if(currentDay === 17) { // Promise Day
+                promiseCount = 0;
+                document.getElementById('promiseMessageBox').style.display = 'none';
+            }
+            else if(currentDay === 18) { // Hug Day
+                hugMessageCount = 0;
+                hugTaps = 0;
+                canTap = true;
+                setNewTapTarget();
+                document.getElementById('hugMessageBox').style.display = 'none';
+            }
+            else if(currentDay === 19) { // Kiss Day
+                // Nothing to reset
+            }
+            else if(currentDay === 20) { // Valentine's Day Q&A
+                currentQuestion = 0;
+                updateQuestion();
+                document.getElementById('questionBox').innerHTML = `
+                    <h2 id="questionText">Do you oath to be truthful with your answer?</h2>
+                    <p id="answerHint" style="color: #666; margin: 10px 0;">Say: "yes" or "no"</p>
+                    <div id="buttonAnswers" style="display: none;">
+                        <button class="btn-small" onclick="handleAnswer('yes')">Yes</button>
+                        <button class="btn-small" onclick="handleAnswer('no')">No</button>
+                    </div>
+                `;
+                startVoiceRecognition();
+            }
+        }
+        
         // Voice recognition
         function toggleMode() {
             voiceMode = !voiceMode;
@@ -1272,20 +1227,30 @@
         }
         
         function showFinale() {
+            // First show HAPPY VALENTINE'S DAY message
             document.getElementById('questionBox').innerHTML = `
-                <h2 style="color: #ff4d6d; text-align: center;">❤️ HAPPY VALENTINE'S DAY MY LOVE ❤️</h2>
-                <div style="text-align: center; margin: 20px 0;">
-                    <img src="images/ring.png" style="max-width: 100%; border-radius: 20px;" alt="Ring">
-                </div>
-                <p style="font-size: 24px; text-align: center;">Today. Tomorrow. Forever.</p>
-                <p style="font-size: 18px; text-align: center;">I love you, Anabel! ❤️</p>
+                <h2 style="color: #ff4d6d; text-align: center; font-size: 32px;">❤️ HAPPY VALENTINE'S DAY MY LOVE ❤️</h2>
+                <p style="font-size: 20px; text-align: center; margin: 20px 0;">Wait for it...</p>
             `;
             
+            // Fireworks immediately
             for(let i = 0; i < 200; i++) {
                 setTimeout(() => {
                     showerEmojis(['🎆', '✨', '💥', '❤️'], 1);
                 }, i * 50);
             }
+            
+            // Wait 3.5 seconds then show ring
+            setTimeout(() => {
+                document.getElementById('questionBox').innerHTML = `
+                    <h2 style="color: #ff4d6d; text-align: center;">❤️ HAPPY VALENTINE'S DAY MY LOVE ❤️</h2>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <img src="images/ring.png" style="max-width: 100%; border-radius: 20px;" alt="Ring">
+                    </div>
+                    <p style="font-size: 24px; text-align: center;">Today. Tomorrow. Forever.</p>
+                    <p style="font-size: 18px; text-align: center;">I love you, Anabel! ❤️</p>
+                `;
+            }, 3500); // 3.5 second delay
         }
         
         function showMessageBox(msg) {
