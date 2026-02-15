@@ -73,6 +73,14 @@
             background-color: black;
         }
 
+        /* ONLY for Batman image - compact size */
+        #stage10 {
+            background-size: contain !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-color: black;
+        }
+
         /* ONLY for Messages video - show full video */
         #stage12 video {
             object-fit: contain !important;
@@ -305,27 +313,51 @@
             word-wrap: break-word;
         }
 
-        /* Shiny text */
-        .shiny-flashing {
-            font-size: clamp(40px, 15vw, 60px);
+        /* Shiny text with heartbeat for LOOK AT ME */
+        .look-at-me {
+            font-size: clamp(40px, 12vw, 70px);
             font-weight: bold;
             text-align: center;
-            background: linear-gradient(90deg, #ffd700, #ff69b4, #ffd700, #ff69b4);
+            background: linear-gradient(90deg, #ffd700, #ff69b4, #ff4d6d, #ffd700);
             background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shineFlash 1s linear infinite, heartbeat 0.8s ease-in-out infinite;
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.7);
-            letter-spacing: 5px;
+            animation: shineFlash 1.5s linear infinite, heartbeatStrong 0.8s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 105, 180, 0.9);
+            letter-spacing: 8px;
             word-wrap: break-word;
             padding: 0 10px;
             z-index: 30;
             position: relative;
+            display: inline-block;
+            width: 100%;
+            line-height: 1.2;
         }
 
         @keyframes shineFlash {
             0% { background-position: 0% center; }
             100% { background-position: 200% center; }
+        }
+
+        @keyframes heartbeatStrong {
+            0% { transform: scale(1); opacity: 0.9; }
+            25% { transform: scale(1.15); opacity: 1; }
+            35% { transform: scale(1); opacity: 0.9; }
+            45% { transform: scale(1.08); opacity: 1; }
+            55% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        /* Center container for LOOK AT ME */
+        .center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            text-align: center;
+            z-index: 30;
+            padding: 0 20px;
         }
 
         /* Golden ribbon */
@@ -412,6 +444,7 @@
             .btn { padding: 10px 20px; font-size: 14px; }
             .floating-message { font-size: 11px; padding: 5px 10px; }
             .puzzle-letter { width: 35px; height: 35px; font-size: 18px; }
+            .look-at-me { font-size: 35px; letter-spacing: 4px; }
         }
 
         button {
@@ -528,8 +561,8 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(9)">Continue</button>
             </div>
 
-            <!-- STAGE 10: Batman imagine -->
-            <div id="stage10" class="stage" style="background-image: url('images/9-batman.png');">
+            <!-- STAGE 10: Batman imagine - COMPACT SIZE (CONTAIN) -->
+            <div id="stage10" class="stage" style="background-image: url('images/9-batman.png'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: black;">
                 <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(10)">Continue</button>
             </div>
@@ -659,11 +692,11 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px;" onclick="nextDay(18)">Next Day →</button>
             </div>
 
-            <!-- STAGE 19: Kiss Day -->
+            <!-- STAGE 19: Kiss Day - FIXED: LOOK AT ME centered with heartbeat -->
             <div id="stage19" class="stage" style="background: linear-gradient(145deg, #1a1a2e, #16213e);">
                 <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
-                <div style="flex:1; display: flex; justify-content: center; align-items: center;">
-                    <h1 class="shiny-flashing">LOOK AT ME</h1>
+                <div class="center-text">
+                    <div class="look-at-me">LOOK AT ME</div>
                 </div>
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px;" onclick="goToValentinesDay()">Next Day →</button>
             </div>
@@ -981,6 +1014,10 @@
             promiseCount = 0;
             let stage17 = document.getElementById('stage17');
             
+            // Remove old listener if exists
+            stage17.replaceWith(stage17.cloneNode(true));
+            stage17 = document.getElementById('stage17');
+            
             stage17.addEventListener('click', function(e) {
                 if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box')) {
                     // Add tap animation
@@ -1018,6 +1055,10 @@
             setNewTapTarget();
             
             let stage18 = document.getElementById('stage18');
+            
+            // Remove old listener if exists
+            stage18.replaceWith(stage18.cloneNode(true));
+            stage18 = document.getElementById('stage18');
             
             stage18.addEventListener('click', function(e) {
                 if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box') && canTap) {
@@ -1140,8 +1181,10 @@
             // Reset based on current stage
             if(currentDay === 2) { // World Map
                 let video = document.querySelector('#stage2 video');
-                video.currentTime = 0;
-                video.play();
+                if(video) {
+                    video.currentTime = 0;
+                    video.play();
+                }
             }
             else if(currentDay === 3 || currentDay === 5 || currentDay === 7) { // Cloud covers
                 // Just stay on same stage
@@ -1151,8 +1194,10 @@
             }
             else if(currentDay === 6) { // India map
                 let video = document.querySelector('#stage6 video');
-                video.currentTime = 0;
-                video.play();
+                if(video) {
+                    video.currentTime = 0;
+                    video.play();
+                }
             }
             else if(currentDay === 8) { // Harsh pic
                 document.getElementById('harshMessageBox').style.display = 'none';
@@ -1182,11 +1227,12 @@
                 initChocolateDay();
                 document.getElementById('chocoMessageBox').style.display = 'none';
             }
-            else if(currentDay === 16) { // Teddy Day - UPDATED to show puzzle again
+            else if(currentDay === 16) { // Teddy Day
                 document.getElementById('stage16').style.backgroundImage = "url('images/teddy-day/teddy.png')";
                 document.getElementById('teddyVideo').style.display = 'none';
                 document.getElementById('floatingMessages').style.display = 'none';
-                document.querySelector('.word-puzzle').style.display = 'block'; // Show puzzle again
+                let puzzle = document.querySelector('.word-puzzle');
+                if(puzzle) puzzle.style.display = 'block';
                 document.getElementById('letter1').value = '';
                 document.getElementById('letter2').value = '';
                 document.getElementById('letter3').value = '';
