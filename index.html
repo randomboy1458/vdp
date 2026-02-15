@@ -95,23 +95,37 @@
             left: 0;
         }
 
-        /* Heartbeat image */
+        /* Heartbeat image - compact size */
         #stage11 .heartbeat-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: auto;
+            height: auto;
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             animation: heartbeat 1.2s ease-in-out infinite;
         }
 
         @keyframes heartbeat {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            25% { transform: translate(-50%, -50%) scale(1.08); }
+            35% { transform: translate(-50%, -50%) scale(1); }
+            45% { transform: translate(-50%, -50%) scale(1.04); }
+            55% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Tap animation for images */
+        .tap-effect {
+            animation: tapPop 0.2s ease;
+        }
+
+        @keyframes tapPop {
             0% { transform: scale(1); }
-            25% { transform: scale(1.08); }
-            35% { transform: scale(1); }
-            45% { transform: scale(1.04); }
-            55% { transform: scale(1); }
+            50% { transform: scale(0.95); }
             100% { transform: scale(1); }
         }
 
@@ -425,7 +439,7 @@
 
             <!-- STAGE 1: Confrontation -->
             <div id="stage1" class="stage active" style="background: linear-gradient(145deg, #1a1a2e, #16213e);">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
                     <h1 class="title" style="font-size: 28px; margin-bottom: 40px; color: white;">This is the Valentine's Day 2026 sweet gift to my lovely Anabel by her lovely Harsh</h1>
                     <h2 class="title" style="font-size: 48px; margin-bottom: 60px; color: #ff4d6d; text-shadow: 0 0 20px #ff4d6d;">Are you ready?</h2>
@@ -435,7 +449,7 @@
 
             <!-- STAGE 2: World Map zoom Spain -->
             <div id="stage2" class="stage">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <video autoplay muted onended="cloudTransition(2, 4)">
                     <source src="images/2-world-map.mp4" type="video/mp4">
                 </video>
@@ -449,30 +463,33 @@
 
             <!-- STAGE 3: Cloud cover -->
             <div id="stage3" class="stage" style="background: white;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
             </div>
 
-            <!-- STAGE 4: Ana pic -->
+            <!-- STAGE 4: Ana pic - Button top left -->
             <div id="stage4" class="stage" style="background-image: url('images/4-ana-pixel.png');">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
-                <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
-                    <div class="message-box" id="anaMessageBox" style="display: none;">
-                        <p id="anaMessage">My beautiful Ana... You are the reason my world is colorful. Every day with you feels like a dream I never want to wake up from. I love you! ❤️</p>
-                        <button class="btn btn-small" onclick="closeMessage('ana')">❤️</button>
-                    </div>
-                    <button class="btn" onclick="showMessage('ana')">Read Message</button>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
+                
+                <!-- Read Message button - TOP LEFT corner -->
+                <button class="btn" onclick="showMessage('ana')" style="position: absolute; top: 80px; left: 20px; z-index: 30;">Read Message</button>
+                
+                <!-- Message box - centered -->
+                <div class="message-box" id="anaMessageBox" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100;">
+                    <p id="anaMessage">My beautiful Ana... You are the reason my world is colorful. Every day with you feels like a dream I never want to wake up from. I love you! ❤️</p>
+                    <button class="btn btn-small" onclick="closeMessage('ana')">❤️</button>
                 </div>
+                
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="cloudTransition(4, 6)">Continue</button>
             </div>
 
             <!-- STAGE 5: Cloud cover 2 -->
             <div id="stage5" class="stage" style="background: white;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
             </div>
 
             <!-- STAGE 6: India map -->
             <div id="stage6" class="stage">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <video autoplay muted onended="cloudTransition(6, 8)">
                     <source src="images/5-india-map.mp4" type="video/mp4">
                 </video>
@@ -486,37 +503,40 @@
 
             <!-- STAGE 7: Cloud cover 3 -->
             <div id="stage7" class="stage" style="background: white;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
             </div>
 
-            <!-- STAGE 8: Harsh pic -->
+            <!-- STAGE 8: Harsh pic - Button top left -->
             <div id="stage8" class="stage" style="background-image: url('images/7-harsh-pixel.png');">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
-                <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
-                    <div class="message-box" id="harshMessageBox" style="display: none;">
-                        <p id="harshMessage">Your Harsh... The man who crossed oceans (virtually) to find you. You are my greatest adventure. I love you, Anabel! 💕</p>
-                        <button class="btn btn-small" onclick="closeMessage('harsh')">❤️</button>
-                    </div>
-                    <button class="btn" onclick="showMessage('harsh')">Read Message</button>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
+                
+                <!-- Read Message button - TOP LEFT corner -->
+                <button class="btn" onclick="showMessage('harsh')" style="position: absolute; top: 80px; left: 20px; z-index: 30;">Read Message</button>
+                
+                <!-- Message box - centered -->
+                <div class="message-box" id="harshMessageBox" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100;">
+                    <p id="harshMessage">Your Harsh... The man who crossed oceans (virtually) to find you. You are my greatest adventure. I love you, Anabel! 💕</p>
+                    <button class="btn btn-small" onclick="closeMessage('harsh')">❤️</button>
                 </div>
+                
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(8)">Continue</button>
             </div>
 
             <!-- STAGE 9: WOS image - FULL SIZE (CONTAIN) -->
             <div id="stage9" class="stage" style="background-image: url('images/8-wos.png'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: black;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(9)">Continue</button>
             </div>
 
             <!-- STAGE 10: Batman imagine -->
             <div id="stage10" class="stage" style="background-image: url('images/9-batman.png');">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 20;" onclick="nextStage(10)">Continue</button>
             </div>
 
-            <!-- STAGE 11: Heartbeat -->
+            <!-- STAGE 11: Heartbeat - compact size -->
             <div id="stage11" class="stage">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <img src="images/12-heartbeat.png" class="heartbeat-image" alt="Heartbeat">
                 <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center; z-index: 20;">
                     <h1 class="title" style="font-size: 36px; color: white; text-shadow: 0 0 20px red; background: rgba(0,0,0,0.3); display: inline-block; padding: 10px 30px; border-radius: 50px;">NO GOING BACK</h1>
@@ -526,7 +546,7 @@
 
             <!-- STAGE 12: Messages slideshow - FULL VIDEO (CONTAIN) -->
             <div id="stage12" class="stage">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <video autoplay muted loop style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: black; z-index: 1;">
                     <source src="images/13-messages-bg.mp4" type="video/mp4">
                 </video>
@@ -544,7 +564,7 @@
 
             <!-- STAGE 13: Rose Day -->
             <div id="stage13" class="stage" style="background-image: url('images/rose-day/lavender-empty.png');">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center; z-index: 50;">
                     <button class="btn" id="waterBtn" onclick="waterFlowers()">💧 Water them</button>
                 </div>
@@ -560,7 +580,7 @@
 
             <!-- STAGE 14: Propose Day -->
             <div id="stage14" class="stage" style="background-image: url('images/propose-day/propose.png');">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <!-- Messages in corners only -->
                 <div id="messageBox1" class="floating-message" style="top: 10%; left: 5%;" onclick="expandMessage(1)">"hey you are....."</div>
                 <div id="messageBox2" class="floating-message" style="top: 10%; right: 5%;" onclick="expandMessage(2)">"i remember when....."</div>
@@ -578,7 +598,7 @@
 
             <!-- STAGE 15: Chocolate Day -->
             <div id="stage15" class="stage" style="background: #fff0f5;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div class="grid-3x3" id="chocolateGrid"></div>
                 <div id="chocoMessageBox" class="message-box" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 200;">
                     <p id="chocoMessage"></p>
@@ -587,9 +607,9 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 100;" onclick="nextDay(15)">Next Day →</button>
             </div>
 
-            <!-- STAGE 16: Teddy Day -->
+            <!-- STAGE 16: Teddy Day - Puzzle will hide after solve -->
             <div id="stage16" class="stage" style="background-image: url('images/teddy-day/teddy.png');">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div class="word-puzzle">
                     <h3 style="color: white; text-align: center;">4 _ _ _ _</h3>
                     <div class="puzzle-input">
@@ -611,9 +631,9 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px; z-index: 100;" onclick="nextDay(16)">Next Day →</button>
             </div>
 
-            <!-- STAGE 17: Promise Day - Tap image -->
+            <!-- STAGE 17: Promise Day - Tap image with animation -->
             <div id="stage17" class="stage" style="background-image: url('images/promise-day/promise.png'); cursor: pointer;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                     <div class="message-box" id="promiseMessageBox" style="display: none;">
                         <p id="promiseText"></p>
@@ -623,9 +643,9 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px;" onclick="nextDay(17)">Next Day →</button>
             </div>
 
-            <!-- STAGE 18: Hug Day - Anonymous tapping -->
+            <!-- STAGE 18: Hug Day - Anonymous tapping with animation -->
             <div id="stage18" class="stage" style="background-image: url('images/hug-day/hug.png'); cursor: pointer;">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center; z-index: 10;">
                     <p style="color: white; margin-bottom: 20px; background: rgba(255,77,109,0.7); padding: 10px; border-radius: 20px; display: inline-block;" id="hugCounter">Tap the image for hugs! 🤗</p>
                 </div>
@@ -641,7 +661,7 @@
 
             <!-- STAGE 19: Kiss Day -->
             <div id="stage19" class="stage" style="background: linear-gradient(145deg, #1a1a2e, #16213e);">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <div style="flex:1; display: flex; justify-content: center; align-items: center;">
                     <h1 class="shiny-flashing">LOOK AT ME</h1>
                 </div>
@@ -650,7 +670,7 @@
 
             <!-- STAGE 20: Valentine's Day Q&A -->
             <div id="stage20" class="stage" style="background: linear-gradient(145deg, #ff4d6d, #b30f2e);">
-                <div class="restart-btn" onclick="restartCurrentDay()">⟳</div>
+                <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <button id="modeToggle" class="mode-toggle" onclick="toggleMode()">🎤 Voice Mode</button>
                 
                 <div style="flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
@@ -845,6 +865,9 @@
                 document.getElementById('stage13').style.backgroundImage = "url('images/rose-day/lavender-full.png')";
                 document.getElementById('goldenRibbon').style.display = 'block';
                 document.getElementById('nextDayBtn').style.display = 'block';
+                
+                // Celebration effect
+                celebrateDayComplete();
             }
         }
         
@@ -893,6 +916,12 @@
                 let msgIndex = chocolateMessagePositions.indexOf(index);
                 document.getElementById('chocoMessage').textContent = chocolateMessages[msgIndex];
                 document.getElementById('chocoMessageBox').style.display = 'block';
+                
+                // Check if all messages found
+                let foundMessages = chocolateClicked.filter((clicked, i) => clicked && chocolateMessagePositions.includes(i)).length;
+                if(foundMessages === 2) {
+                    celebrateDayComplete();
+                }
             } else {
                 element.classList.add('clicked');
             }
@@ -902,7 +931,7 @@
             document.getElementById('chocoMessageBox').style.display = 'none';
         }
         
-        // Teddy Day
+        // Teddy Day - UPDATED to hide puzzle after solve
         function checkPuzzle() {
             let l1 = document.getElementById('letter1').value.toUpperCase();
             let l2 = document.getElementById('letter2').value.toUpperCase();
@@ -910,6 +939,9 @@
             let l4 = document.getElementById('letter4').value.toUpperCase();
             
             if(l1 === 'E' && l2 === 'R' && l3 === 'I' && l4 === 'S') {
+                // Hide the puzzle completely
+                document.querySelector('.word-puzzle').style.display = 'none';
+                
                 document.getElementById('stage16').style.backgroundImage = 'none';
                 document.getElementById('teddyVideo').style.display = 'block';
                 
@@ -939,14 +971,24 @@
                     msg.style.pointerEvents = 'none';
                     container.appendChild(msg);
                 }
+                
+                celebrateDayComplete();
             }
         }
         
-        // Promise Day - Tap image
+        // Promise Day - Tap image with animation
         function initPromiseDay() {
             promiseCount = 0;
-            document.getElementById('stage17').addEventListener('click', function(e) {
+            let stage17 = document.getElementById('stage17');
+            
+            stage17.addEventListener('click', function(e) {
                 if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box')) {
+                    // Add tap animation
+                    stage17.classList.add('tap-effect');
+                    setTimeout(() => {
+                        stage17.classList.remove('tap-effect');
+                    }, 200);
+                    
                     showNextPromise();
                 }
             });
@@ -957,6 +999,10 @@
                 document.getElementById('promiseText').textContent = promises[promiseCount];
                 document.getElementById('promiseMessageBox').style.display = 'block';
                 promiseCount++;
+                
+                if(promiseCount === promises.length) {
+                    celebrateDayComplete();
+                }
             }
         }
         
@@ -964,7 +1010,7 @@
             document.getElementById('promiseMessageBox').style.display = 'none';
         }
         
-        // Hug Day - Anonymous tapping
+        // Hug Day - Anonymous tapping with animation
         function initHugDay() {
             hugMessageCount = 0;
             hugTaps = 0;
@@ -972,18 +1018,23 @@
             setNewTapTarget();
             
             let stage18 = document.getElementById('stage18');
-            if(stage18) {
-                stage18.addEventListener('click', function(e) {
-                    if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box') && canTap) {
-                        hugTaps++;
-                        
-                        if(hugTaps >= tapsNeeded && hugMessageCount < 5) {
-                            showHugMessage();
-                            canTap = false;
-                        }
+            
+            stage18.addEventListener('click', function(e) {
+                if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box') && canTap) {
+                    // Add tap animation
+                    stage18.classList.add('tap-effect');
+                    setTimeout(() => {
+                        stage18.classList.remove('tap-effect');
+                    }, 200);
+                    
+                    hugTaps++;
+                    
+                    if(hugTaps >= tapsNeeded && hugMessageCount < 5) {
+                        showHugMessage();
+                        canTap = false;
                     }
-                });
-            }
+                }
+            });
         }
         
         function setNewTapTarget() {
@@ -1006,7 +1057,13 @@
                 canTap = true;
             } else {
                 document.getElementById('hugCounter').textContent = 'All hugs received! ❤️';
+                celebrateDayComplete();
             }
+        }
+        
+        // Celebration effect when day is complete
+        function celebrateDayComplete() {
+            showerEmojis(['🎉', '✨', '❤️', '🎊'], 30);
         }
         
         // Messages slideshow
@@ -1070,12 +1127,47 @@
             else if(day === 18) { goToStage(19); }
         }
         
-        // Restart current day
-        function restartCurrentDay() {
+        // Restart current day - works for EVERY stage
+        function restartCurrentDay(event) {
             let currentDay = currentStage;
             
+            // Add tap animation to restart button
+            event.target.classList.add('tap-effect');
+            setTimeout(() => {
+                event.target.classList.remove('tap-effect');
+            }, 200);
+            
             // Reset based on current stage
-            if(currentDay === 13) { // Rose Day
+            if(currentDay === 2) { // World Map
+                let video = document.querySelector('#stage2 video');
+                video.currentTime = 0;
+                video.play();
+            }
+            else if(currentDay === 3 || currentDay === 5 || currentDay === 7) { // Cloud covers
+                // Just stay on same stage
+            }
+            else if(currentDay === 4) { // Ana pic
+                document.getElementById('anaMessageBox').style.display = 'none';
+            }
+            else if(currentDay === 6) { // India map
+                let video = document.querySelector('#stage6 video');
+                video.currentTime = 0;
+                video.play();
+            }
+            else if(currentDay === 8) { // Harsh pic
+                document.getElementById('harshMessageBox').style.display = 'none';
+            }
+            else if(currentDay === 9 || currentDay === 10) { // WOS, Batman
+                // Nothing to reset
+            }
+            else if(currentDay === 11) { // Heartbeat
+                // Nothing to reset
+            }
+            else if(currentDay === 12) { // Messages slideshow
+                currentMessageIndex = 0;
+                document.getElementById('currentMessage').textContent = slideshowMessages[0];
+            }
+            else if(currentDay === 13) { // Rose Day
                 roseCount = 0;
                 document.getElementById('stage13').style.backgroundImage = "url('images/rose-day/lavender-empty.png')";
                 document.getElementById('waterBtn').style.display = 'block';
@@ -1090,10 +1182,11 @@
                 initChocolateDay();
                 document.getElementById('chocoMessageBox').style.display = 'none';
             }
-            else if(currentDay === 16) { // Teddy Day
+            else if(currentDay === 16) { // Teddy Day - UPDATED to show puzzle again
                 document.getElementById('stage16').style.backgroundImage = "url('images/teddy-day/teddy.png')";
                 document.getElementById('teddyVideo').style.display = 'none';
                 document.getElementById('floatingMessages').style.display = 'none';
+                document.querySelector('.word-puzzle').style.display = 'block'; // Show puzzle again
                 document.getElementById('letter1').value = '';
                 document.getElementById('letter2').value = '';
                 document.getElementById('letter3').value = '';
@@ -1134,6 +1227,8 @@
             document.getElementById('modeToggle').textContent = voiceMode ? '🎤 Voice Mode' : '👆 Button Mode';
             document.getElementById('voiceIndicator').style.display = voiceMode ? 'block' : 'none';
             document.getElementById('buttonAnswers').style.display = voiceMode ? 'none' : 'flex';
+            document.getElementById('buttonAnswers').style.justifyContent = 'center';
+            document.getElementById('buttonAnswers').style.gap = '10px';
         }
         
         function startVoiceRecognition() {
@@ -1250,7 +1345,7 @@
                     <p style="font-size: 24px; text-align: center;">Today. Tomorrow. Forever.</p>
                     <p style="font-size: 18px; text-align: center;">I love you, Anabel! ❤️</p>
                 `;
-            }, 3500); // 3.5 second delay
+            }, 3500);
         }
         
         function showMessageBox(msg) {
