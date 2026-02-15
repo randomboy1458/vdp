@@ -1196,15 +1196,13 @@
             initPromiseDay();
         }
         
-        // Go to Valentine's Day finale
+        // Go to Valentine's Day finale - FIXED: No music during Q&A
         function goToValentinesDay() {
             if(song2) {
                 song2.pause();
                 song2.currentTime = 0;
             }
-            if(song3) {
-                song3.play().catch(e => console.log("Audio play failed:", e));
-            }
+            // DON'T play song3 here - will play at ring stage
             
             let overlay = document.getElementById('cloudOverlay');
             overlay.style.background = 'black';
@@ -1341,14 +1339,11 @@
             }
         }
         
-        // Press & Hold Voice Functions
+        // Press & Hold Voice Functions - FIXED: No music controls
         function startListening() {
             if (!voiceMode) return;
             
-            // Pause music
-            if (song3) {
-                song3.pause();
-            }
+            // NO MUSIC CONTROLS HERE - music is already off during Q&A
             
             // Visual feedback
             let btn = document.getElementById('pressToSpeakBtn');
@@ -1364,10 +1359,7 @@
         function stopListening() {
             if (!voiceMode) return;
             
-            // Resume music
-            if (song3) {
-                song3.play().catch(e => console.log("Audio play failed:", e));
-            }
+            // NO MUSIC CONTROLS HERE - music is already off during Q&A
             
             // Reset button
             let btn = document.getElementById('pressToSpeakBtn');
@@ -1448,11 +1440,6 @@
             if (recognition) {
                 try { recognition.stop(); } catch(e) {}
             }
-            
-            // Resume music if it was paused
-            if (song3 && voiceMode) {
-                song3.play().catch(e => console.log("Audio play failed:", e));
-            }
         }
         
         function updateButtonMode() {
@@ -1470,11 +1457,6 @@
                 }
                 if (buttonContainer) buttonContainer.style.display = 'none';
                 if (pressBtn) pressBtn.style.display = 'block';
-                
-                // Resume music
-                if (song3) {
-                    song3.play().catch(e => console.log("Audio play failed:", e));
-                }
             } else {
                 modeToggle.textContent = '🎤 Switch to Voice Mode';
                 modeToggle.style.background = '#ff4d6d';
@@ -1484,11 +1466,6 @@
                     populateButtons();
                 }
                 if (pressBtn) pressBtn.style.display = 'none';
-                
-                // Ensure music is playing for button mode
-                if (song3) {
-                    song3.play().catch(e => console.log("Audio play failed:", e));
-                }
             }
         }
         
@@ -1645,6 +1622,12 @@
         }
         
         function showFinale() {
+            // Play music at ring stage
+            if(song3) {
+                song3.currentTime = 0;
+                song3.play().catch(e => console.log("Audio play failed:", e));
+            }
+            
             // First show HAPPY VALENTINE'S DAY message
             document.getElementById('questionBox').innerHTML = `
                 <h2 style="color: #ff4d6d; text-align: center; font-size: 32px;">❤️ Feliç dia de Sant Valentí, món meu ❤️</h2>
