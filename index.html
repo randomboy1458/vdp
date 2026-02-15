@@ -508,7 +508,7 @@
                 
                 <!-- Message box - centered -->
                 <div class="message-box" id="anaMessageBox" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100;">
-                    <p id="anaMessage">My beautiful Ana... You are the reason my world is colorful. Every day with you feels like a dream I never want to wake up from. I love you! ❤️</p>
+                    <p id="anaMessage">My beautiful Ana... I love you, i love you a lot, i love you the most. and ofc i love you more. you make my heart feel at home, you make my smile feel a bit warm, you make my day as pretty as you and you make live as beautiful as you, on this valentine's day i wish i get a pretty smile on your face because you deserve it all! ❤️</p>
                     <button class="btn btn-small" onclick="closeMessage('ana')">❤️</button>
                 </div>
                 
@@ -548,7 +548,7 @@
                 
                 <!-- Message box - centered -->
                 <div class="message-box" id="harshMessageBox" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100;">
-                    <p id="harshMessage">Your Harsh... The man who crossed oceans (virtually) to find you. You are my greatest adventure. I love you, Anabel! 💕</p>
+                    <p id="harshMessage">Your Harsh... The man who was just moving through life, unknown to what holds next, a bit silly, a bit confused. That found you and just cant get off you no moreeeee... (a leach if that sounds good. but a good one). The man who looks at you not as a girlfriend but as the most beautiful creation of God, and no i am not silly saying this!! 💕</p>
                     <button class="btn btn-small" onclick="closeMessage('harsh')">❤️</button>
                 </div>
                 
@@ -615,11 +615,11 @@
             <div id="stage14" class="stage" style="background-image: url('images/propose-day/propose.png');">
                 <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <!-- Messages in corners only -->
-                <div id="messageBox1" class="floating-message" style="top: 10%; left: 5%;" onclick="expandMessage(1)">"hey you are....."</div>
-                <div id="messageBox2" class="floating-message" style="top: 10%; right: 5%;" onclick="expandMessage(2)">"i remember when....."</div>
+                <div id="messageBox1" class="floating-message" style="top: 10%; left: 5%;" onclick="expandMessage(1)">"You are....."</div>
+                <div id="messageBox2" class="floating-message" style="top: 10%; right: 5%;" onclick="expandMessage(2)">"i remember the....."</div>
                 <div id="messageBox3" class="floating-message" style="bottom: 15%; left: 5%;" onclick="expandMessage(3)">"you make me....."</div>
-                <div id="messageBox4" class="floating-message" style="bottom: 15%; right: 5%;" onclick="expandMessage(4)">"my favorite thing....."</div>
-                <div id="messageBox5" class="floating-message" style="top: 50%; left: 5%; transform: translateY(-50%);" onclick="expandMessage(5)">"forever starts....."</div>
+                <div id="messageBox4" class="floating-message" style="bottom: 15%; right: 5%;" onclick="expandMessage(4)">"My most....."</div>
+                <div id="messageBox5" class="floating-message" style="top: 50%; left: 5%; transform: translateY(-50%);" onclick="expandMessage(5)">"forever is just....."</div>
                 
                 <div id="expandedMessageBox" class="message-box" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; z-index: 200;">
                     <p id="expandedMessageText"></p>
@@ -732,54 +732,54 @@
         let recognition;
         
         // Message arrays - CUSTOMIZE THESE!
-        let anaMessage = "My beautiful Ana... You are the reason my world is colorful. Every day with you feels like a dream I never want to wake up from. I love you! ❤️";
-        let harshMessage = "Your Harsh... The man who crossed oceans (virtually) to find you. You are my greatest adventure. I love you, Anabel! 💕";
+        let anaMessage = "My beautiful Ana... I love you, i love you a lot, i love you the most. and ofc i love you more. you make my heart feel at home, you make my smile feel a bit warm, you make my day as pretty as you and you make live as beautiful as you, on this valentine's day i wish i get a pretty smile on your face because you deserve it all! ❤️";
+        let harshMessage = "Your Harsh... The man who was just moving through life, unknown to what holds next, a bit silly, a bit confused. That found you and just cant get off you no moreeeee... (a leach if that sounds good. but a good one). The man who looks at you not as a girlfriend but as the most beautiful creation of God, and no i am not silly saying this!! 💕";
         
         // Rose Day
         let roseMessages = [
-            "Message 1: The first time I saw you, I knew...",
+            "Message 1: The first time I saw you, yeah when i lost my breath and went god she is stunninggg...",
             "Message 2: Your smile lights up my entire world",
-            "Message 3: Every moment with you is precious",
+            "Message 3: Every moment with you is magical and the most beautiful",
             "Message 4: You make me want to be the best version of myself",
-            "Message 5: I love you more than all the stars in the sky"
+            "Message 5: I love you more, i love you more than the bad days the good days the ups and the downs. i love you more than you love me, hence i win the battle!!"
         ];
         let roseCount = 0;
         
         // Propose Day messages
         let proposeMessages = [
-            "Will you be mine forever? I've loved you from the moment we met, and that love has only grown stronger. You are my everything.",
-            "I remember the first time you said my name. It sounded like music. I want to hear it every day for the rest of my life.",
-            "You make me feel like I can fly. With you, anything is possible. You're my strength, my peace, my home.",
-            "My favorite thing in the world is making you laugh. That sound is better than any melody. I want to spend my life creating that sound.",
-            "Forever starts now. With you, I want every sunrise, every sunset, and everything in between. Be mine always."
+            "You are absolutely perfect to me",
+            " I remember the day you first talked to me, it was a blessing to be able to talk to you ever since",
+            "You make me the happiest person alive",
+            "My most favourite person in this world is no other than you",
+            "Forever is just a word, I will love you even after i die "
         ];
         
         // Chocolate Day messages (2 secrets)
         let chocolateMessages = [
-            "You're the sweetest thing in my life! 🍫",
-            "You + Me = Perfect together! 💕"
+            "You are the sweetest chocolate to my tongue 🍫",
+            "A chocolate named Ana a day keeps the Stress away 💕"
         ];
         let chocolateMessagePositions = [];
         let chocolateClicked = [];
         
         // Teddy Day
         let teddyMessages = [
-            "You're as huggable as a teddy bear! 🧸",
+            "You are perfect🧸",
             "I'd travel any distance just to hug you",
-            "You're my comfort zone",
-            "Wrapped in your love feels like home",
-            "You make everything better",
-            "My favorite place is in your arms"
+            "You are my home",
+            "I feel the best when with you or around you",
+            "You are the little charm, you make this world perfect for me",
+            "Your Smile is the best medicine"
         ];
         
         // Promise Day
         let promises = [
             "I promise to always listen to you, even when we're far apart.",
-            "I promise to make you laugh every single day.",
-            "I promise to be your biggest supporter in everything you do.",
+            "I promise to love you more and more forever.",
+            "I promise to be by your side forever.",
             "I promise to always be honest with you, no matter what.",
-            "I promise to love you more with each passing day.",
-            "I WILL LOVE YOU FOREVER"
+            "I promise to bring you a world full of happiness and joy and laughs and adventures and cuddles and hugs and kissus and care and excitement!.",
+            "I WILL LOVE YOU FOREVER AND EVER"
         ];
         let promiseCount = 0;
         
@@ -787,9 +787,9 @@
         let hugMessages = [
             "This hug is for all the nights we talk until sunrise 🤗",
             "This hug is for when you're feeling down 💕",
-            "This hug is just because you're you ❤️",
-            "This hug is for all the miles between us 🥰",
-            "This hug is forever and always 💖"
+            "This hug is just because you are perfect and you are you ❤️",
+            "This hug is for all the mistakes i ever made 🥰",
+            "This hug is for the eternity, this hug is forever 💖"
         ];
         let hugMessageCount = 0;
         let hugTaps = 0;
@@ -798,16 +798,16 @@
         
         // Messages slideshow
         let slideshowMessages = [
-            "I miss you even when we just talked.",
+            "I miss you on every heartbeat.",
             "You're the first person I think of when I wake up.",
-            "Your name is my favorite word.",
-            "Distance means so little when someone means so much.",
-            "I love you more than pizza!",
-            "You're my favorite notification.",
+            "Your name is my favorite word, it soothes the deepest scars",
+            "Distance hurts but knowing it will end one day makes it worth the wait.",
+            "I love you more than you love meeeeeee!",
+            "You're my favorite notification, it lights up the dullest day of mine.",
             "Every love song reminds me of you.",
             "You're my home.",
-            "I choose you. And I'll choose you every day.",
-            "Forever would never be enough with you."
+            "I choose you. and i will forever choose you no matter what.",
+            "Even forever sounds less when its about you"
         ];
         let currentMessageIndex = 0;
         
@@ -1256,7 +1256,7 @@
                 currentQuestion = 0;
                 updateQuestion();
                 document.getElementById('questionBox').innerHTML = `
-                    <h2 id="questionText">Do you oath to be truthful with your answer?</h2>
+                    <h2 id="questionText">Do you oath to be truthful with your answers?</h2>
                     <p id="answerHint" style="color: #666; margin: 10px 0;">Say: "yes" or "no"</p>
                     <div id="buttonAnswers" style="display: none;">
                         <button class="btn-small" onclick="handleAnswer('yes')">Yes</button>
@@ -1370,7 +1370,7 @@
         function showFinale() {
             // First show HAPPY VALENTINE'S DAY message
             document.getElementById('questionBox').innerHTML = `
-                <h2 style="color: #ff4d6d; text-align: center; font-size: 32px;">❤️ HAPPY VALENTINE'S DAY MY LOVE ❤️</h2>
+                <h2 style="color: #ff4d6d; text-align: center; font-size: 32px;">❤️ Feliç dia de Sant Valentí, món meu ❤️</h2>
                 <p style="font-size: 20px; text-align: center; margin: 20px 0;">Wait for it...</p>
             `;
             
@@ -1384,12 +1384,12 @@
             // Wait 3.5 seconds then show ring
             setTimeout(() => {
                 document.getElementById('questionBox').innerHTML = `
-                    <h2 style="color: #ff4d6d; text-align: center;">❤️ HAPPY VALENTINE'S DAY MY LOVE ❤️</h2>
+                    <h2 style="color: #ff4d6d; text-align: center;">❤️ Feliç dia de Sant Valentí, món meu ❤️</h2>
                     <div style="text-align: center; margin: 20px 0;">
                         <img src="images/ring.png" style="max-width: 100%; border-radius: 20px;" alt="Ring">
                     </div>
                     <p style="font-size: 24px; text-align: center;">Today. Tomorrow. Forever.</p>
-                    <p style="font-size: 18px; text-align: center;">I love you, Anabel! ❤️</p>
+                    <p style="font-size: 18px; text-align: center;">Te Quiero Anabel! ❤️</p>
                 `;
             }, 3500);
         }
