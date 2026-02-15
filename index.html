@@ -420,6 +420,7 @@
             font-size: clamp(12px, 3.5vw, 14px);
             z-index: 200;
             cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         /* Cloud overlay */
@@ -450,6 +451,22 @@
         button {
             min-height: 44px;
             min-width: 44px;
+        }
+
+        /* Manual button mode styles */
+        .button-mode-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .answer-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -701,7 +718,7 @@
                 <button class="btn-small" style="position: absolute; bottom: 20px; right: 20px;" onclick="goToValentinesDay()">Next Day →</button>
             </div>
 
-            <!-- STAGE 20: Valentine's Day Q&A -->
+            <!-- STAGE 20: Valentine's Day Q&A - FIXED with working buttons -->
             <div id="stage20" class="stage" style="background: linear-gradient(145deg, #ff4d6d, #b30f2e);">
                 <div class="restart-btn" onclick="restartCurrentDay(event)">⟳</div>
                 <button id="modeToggle" class="mode-toggle" onclick="toggleMode()">🎤 Voice Mode</button>
@@ -710,13 +727,22 @@
                     <div id="questionBox" class="message-box" style="width: 100%;">
                         <h2 id="questionText">Do you oath to be truthful with your answer?</h2>
                         <p id="answerHint" style="color: #666; margin: 10px 0;">Say: "yes" or "no"</p>
-                        <div id="buttonAnswers" style="display: none;">
-                            <button class="btn-small" onclick="handleAnswer('yes')">Yes</button>
-                            <button class="btn-small" onclick="handleAnswer('no')">No</button>
+                        
+                        <!-- Voice indicator -->
+                        <div id="voiceIndicator" style="color: #ff4d6d; margin: 10px; font-weight: bold;">🎤 Listening... (click the toggle button above to switch to manual mode)</div>
+                        
+                        <!-- Button mode container - initially hidden -->
+                        <div id="buttonModeContainer" style="display: none;">
+                            <div class="button-mode-container">
+                                <div class="answer-row" id="answerRow1">
+                                    <!-- Buttons will be dynamically populated -->
+                                </div>
+                                <div class="answer-row" id="answerRow2">
+                                    <!-- Buttons will be dynamically populated -->
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div id="voiceIndicator" style="color: white; margin: 10px;">🎤 Listening...</div>
                 </div>
             </div>
 
@@ -729,9 +755,10 @@
         // Game state
         let currentStage = 1;
         let voiceMode = true;
-        let recognition;
+        let recognition = null;
+        let recognitionActive = false;
         
-        // Message arrays - CUSTOMIZE THESE!
+        // Message arrays
         let anaMessage = "My beautiful Ana... I love you, i love you a lot, i love you the most. and ofc i love you more. you make my heart feel at home, you make my smile feel a bit warm, you make my day as pretty as you and you make live as beautiful as you, on this valentine's day i wish i get a pretty smile on your face because you deserve it all! ❤️";
         let harshMessage = "Your Harsh... The man who was just moving through life, unknown to what holds next, a bit silly, a bit confused. That found you and just cant get off you no moreeeee... (a leach if that sounds good. but a good one). The man who looks at you not as a girlfriend but as the most beautiful creation of God, and no i am not silly saying this!! 💕";
         
@@ -813,11 +840,11 @@
         
         // Valentine's Day Q&A
         let questions = [
-            { text: "Do you oath to be truthful with your answer?", hint: "Say: 'yes' or 'no'" },
-            { text: "Do you love Harsh?", hint: "Say: 'I love Harsh' or 'No I don't'" },
-            { text: "Do you think he is handsome?", hint: "Say: 'yes' or 'no'" },
-            { text: "Do you think he is the right man for you?", hint: "Say: 'he is the right man' or 'Maybe'" },
-            { text: "So would you like to be his valentine? (pretty wife)", hint: "Say: 'yes' or 'yes but bigger'" }
+            { text: "Do you oath to be truthful with your answer?", hint: "Say: 'yes' or 'no'", options: ['yes', 'no'] },
+            { text: "Do you love Harsh?", hint: "Say: 'I love Harsh' or 'No I don't'", options: ['I love Harsh', 'No I don\'t'] },
+            { text: "Do you think he is handsome?", hint: "Say: 'yes' or 'no'", options: ['yes', 'no'] },
+            { text: "Do you think he is the right man for you?", hint: "Say: 'he is the right man' or 'Maybe'", options: ['he is the right man', 'Maybe'] },
+            { text: "So would you like to be his valentine? (pretty wife)", hint: "Say: 'yes' or 'yes but bigger'", options: ['yes', 'yes but bigger'] }
         ];
         let currentQuestion = 0;
         
@@ -828,7 +855,7 @@
         
         // Start game
         function startGame() {
-            if(song1) song1.play();
+            if(song1) song1.play().catch(e => console.log("Audio play failed:", e));
             nextStage(1);
         }
         
@@ -964,7 +991,7 @@
             document.getElementById('chocoMessageBox').style.display = 'none';
         }
         
-        // Teddy Day - UPDATED to hide puzzle after solve
+        // Teddy Day
         function checkPuzzle() {
             let l1 = document.getElementById('letter1').value.toUpperCase();
             let l2 = document.getElementById('letter2').value.toUpperCase();
@@ -1015,15 +1042,15 @@
             let stage17 = document.getElementById('stage17');
             
             // Remove old listener if exists
-            stage17.replaceWith(stage17.cloneNode(true));
-            stage17 = document.getElementById('stage17');
+            let newStage17 = stage17.cloneNode(true);
+            stage17.parentNode.replaceChild(newStage17, stage17);
             
-            stage17.addEventListener('click', function(e) {
-                if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box')) {
+            newStage17.addEventListener('click', function(e) {
+                if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box') && !e.target.closest('.restart-btn')) {
                     // Add tap animation
-                    stage17.classList.add('tap-effect');
+                    newStage17.classList.add('tap-effect');
                     setTimeout(() => {
-                        stage17.classList.remove('tap-effect');
+                        newStage17.classList.remove('tap-effect');
                     }, 200);
                     
                     showNextPromise();
@@ -1057,15 +1084,15 @@
             let stage18 = document.getElementById('stage18');
             
             // Remove old listener if exists
-            stage18.replaceWith(stage18.cloneNode(true));
-            stage18 = document.getElementById('stage18');
+            let newStage18 = stage18.cloneNode(true);
+            stage18.parentNode.replaceChild(newStage18, stage18);
             
-            stage18.addEventListener('click', function(e) {
-                if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box') && canTap) {
+            newStage18.addEventListener('click', function(e) {
+                if(e.target.tagName !== 'BUTTON' && !e.target.closest('.message-box') && !e.target.closest('.restart-btn') && canTap) {
                     // Add tap animation
-                    stage18.classList.add('tap-effect');
+                    newStage18.classList.add('tap-effect');
                     setTimeout(() => {
-                        stage18.classList.remove('tap-effect');
+                        newStage18.classList.remove('tap-effect');
                     }, 200);
                     
                     hugTaps++;
@@ -1120,8 +1147,13 @@
         
         // Start Valentine's Week
         function startValentineWeek() {
-            if(song1) song1.pause();
-            if(song2) song2.play();
+            if(song1) {
+                song1.pause();
+                song1.currentTime = 0;
+            }
+            if(song2) {
+                song2.play().catch(e => console.log("Audio play failed:", e));
+            }
             goToStage(13);
             initChocolateDay();
             initHugDay();
@@ -1130,8 +1162,13 @@
         
         // Go to Valentine's Day finale
         function goToValentinesDay() {
-            if(song2) song2.pause();
-            if(song3) song3.play();
+            if(song2) {
+                song2.pause();
+                song2.currentTime = 0;
+            }
+            if(song3) {
+                song3.play().catch(e => console.log("Audio play failed:", e));
+            }
             
             let overlay = document.getElementById('cloudOverlay');
             overlay.style.background = 'black';
@@ -1150,8 +1187,13 @@
                         overlay.classList.remove('active');
                         overlay.style.background = '';
                         
+                        // Reset questions
                         currentQuestion = 0;
                         updateQuestion();
+                        
+                        // Start in voice mode by default
+                        voiceMode = true;
+                        updateButtonMode();
                         startVoiceRecognition();
                     }
                 }, 100);
@@ -1168,7 +1210,7 @@
             else if(day === 18) { goToStage(19); }
         }
         
-        // Restart current day - works for EVERY stage
+        // Restart current day
         function restartCurrentDay(event) {
             let currentDay = currentStage;
             
@@ -1183,7 +1225,7 @@
                 let video = document.querySelector('#stage2 video');
                 if(video) {
                     video.currentTime = 0;
-                    video.play();
+                    video.play().catch(e => console.log("Video play failed:", e));
                 }
             }
             else if(currentDay === 3 || currentDay === 5 || currentDay === 7) { // Cloud covers
@@ -1196,7 +1238,7 @@
                 let video = document.querySelector('#stage6 video');
                 if(video) {
                     video.currentTime = 0;
-                    video.play();
+                    video.play().catch(e => console.log("Video play failed:", e));
                 }
             }
             else if(currentDay === 8) { // Harsh pic
@@ -1255,74 +1297,248 @@
             else if(currentDay === 20) { // Valentine's Day Q&A
                 currentQuestion = 0;
                 updateQuestion();
-                document.getElementById('questionBox').innerHTML = `
-                    <h2 id="questionText">Do you oath to be truthful with your answers?</h2>
-                    <p id="answerHint" style="color: #666; margin: 10px 0;">Say: "yes" or "no"</p>
-                    <div id="buttonAnswers" style="display: none;">
-                        <button class="btn-small" onclick="handleAnswer('yes')">Yes</button>
-                        <button class="btn-small" onclick="handleAnswer('no')">No</button>
-                    </div>
-                `;
+                // Restart voice recognition
+                if(recognition) {
+                    try { recognition.stop(); } catch(e) {}
+                }
+                voiceMode = true;
+                updateButtonMode();
                 startVoiceRecognition();
             }
         }
         
-        // Voice recognition
+        // Voice recognition functions
         function toggleMode() {
             voiceMode = !voiceMode;
-            document.getElementById('modeToggle').textContent = voiceMode ? '🎤 Voice Mode' : '👆 Button Mode';
-            document.getElementById('voiceIndicator').style.display = voiceMode ? 'block' : 'none';
-            document.getElementById('buttonAnswers').style.display = voiceMode ? 'none' : 'flex';
-            document.getElementById('buttonAnswers').style.justifyContent = 'center';
-            document.getElementById('buttonAnswers').style.gap = '10px';
+            updateButtonMode();
+            
+            if(voiceMode) {
+                // Switching to voice mode
+                if(recognition) {
+                    try { recognition.stop(); } catch(e) {}
+                }
+                startVoiceRecognition();
+            } else {
+                // Switching to button mode
+                if(recognition) {
+                    try { 
+                        recognition.stop();
+                        recognitionActive = false;
+                    } catch(e) {}
+                }
+            }
+        }
+        
+        function updateButtonMode() {
+            let modeToggle = document.getElementById('modeToggle');
+            let voiceIndicator = document.getElementById('voiceIndicator');
+            let buttonContainer = document.getElementById('buttonModeContainer');
+            
+            if(voiceMode) {
+                modeToggle.textContent = '🎤 Voice Mode (Active)';
+                modeToggle.style.background = '#ff4d6d';
+                if(voiceIndicator) voiceIndicator.style.display = 'block';
+                if(buttonContainer) buttonContainer.style.display = 'none';
+            } else {
+                modeToggle.textContent = '👆 Button Mode (Active)';
+                modeToggle.style.background = '#4CAF50';
+                if(voiceIndicator) voiceIndicator.style.display = 'none';
+                if(buttonContainer) buttonContainer.style.display = 'block';
+                populateButtons();
+            }
+        }
+        
+        function populateButtons() {
+            if(currentQuestion >= questions.length) return;
+            
+            let row1 = document.getElementById('answerRow1');
+            let row2 = document.getElementById('answerRow2');
+            
+            if(!row1 || !row2) return;
+            
+            row1.innerHTML = '';
+            row2.innerHTML = '';
+            
+            let options = questions[currentQuestion].options;
+            
+            // Split options into rows (max 2 per row)
+            options.forEach((opt, index) => {
+                let button = document.createElement('button');
+                button.className = 'btn-small';
+                button.textContent = opt;
+                button.onclick = function() { 
+                    handleButtonAnswer(opt);
+                    // Add tap effect
+                    button.classList.add('tap-effect');
+                    setTimeout(() => button.classList.remove('tap-effect'), 200);
+                };
+                button.style.margin = '5px';
+                button.style.minWidth = '120px';
+                
+                if(index < 2) {
+                    row1.appendChild(button);
+                } else {
+                    row2.appendChild(button);
+                }
+            });
+        }
+        
+        function handleButtonAnswer(answer) {
+            // Convert button answer to the format handleAnswer expects
+            if(currentQuestion === 0) {
+                if(answer.toLowerCase() === 'yes') handleAnswer('yes');
+                else if(answer.toLowerCase() === 'no') handleAnswer('no');
+            }
+            else if(currentQuestion === 1) {
+                if(answer === 'I love Harsh') handleAnswer('i love harsh');
+                else if(answer === 'No I don\'t') handleAnswer('no i dont');
+            }
+            else if(currentQuestion === 2) {
+                if(answer.toLowerCase() === 'yes') handleAnswer('yes');
+                else if(answer.toLowerCase() === 'no') handleAnswer('no');
+            }
+            else if(currentQuestion === 3) {
+                if(answer === 'he is the right man') handleAnswer('he is the right man');
+                else if(answer === 'Maybe') handleAnswer('maybe');
+            }
+            else if(currentQuestion === 4) {
+                if(answer === 'yes but bigger') handleAnswer('yes but bigger');
+                else if(answer.toLowerCase() === 'yes') handleAnswer('yes');
+            }
         }
         
         function startVoiceRecognition() {
-            if('webkitSpeechRecognition' in window) {
-                recognition = new webkitSpeechRecognition();
-                recognition.continuous = true;
+            if(!voiceMode) return;
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                // Voice not supported, auto-switch to button mode
+                voiceMode = false;
+                updateButtonMode();
+                return;
+            }
+            
+            try {
+                // Stop any existing recognition
+                if(recognition) {
+                    try { recognition.stop(); } catch(e) {}
+                }
+                
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
                 recognition.lang = 'en-US';
                 recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                
+                recognition.onstart = function() {
+                    recognitionActive = true;
+                    document.getElementById('voiceIndicator').innerHTML = '🎤 Listening... (speak now)';
+                };
                 
                 recognition.onresult = function(event) {
-                    let transcript = event.results[event.results.length-1][0].transcript.toLowerCase().trim();
+                    let transcript = event.results[0][0].transcript.toLowerCase().trim();
+                    console.log("Heard:", transcript);
+                    document.getElementById('voiceIndicator').innerHTML = '🎤 Heard: "' + transcript + '"';
+                    
+                    // Process the transcript
                     handleVoiceInput(transcript);
+                    
+                    // Restart listening after a short delay
+                    setTimeout(() => {
+                        if(voiceMode && recognitionActive) {
+                            try { recognition.start(); } catch(e) {}
+                        }
+                    }, 1000);
                 };
                 
-                recognition.onerror = function() {
-                    voiceMode = false;
-                    toggleMode();
+                recognition.onerror = function(event) {
+                    console.log("Voice error:", event.error);
+                    if(event.error === 'not-allowed') {
+                        document.getElementById('voiceIndicator').innerHTML = '❌ Microphone access denied. Use button mode.';
+                        // Auto-switch to button mode after 3 seconds
+                        setTimeout(() => {
+                            if(voiceMode) {
+                                voiceMode = false;
+                                updateButtonMode();
+                            }
+                        }, 3000);
+                    } else if(event.error === 'no-speech') {
+                        document.getElementById('voiceIndicator').innerHTML = '🎤 No speech detected, try again...';
+                        // Try again
+                        setTimeout(() => {
+                            if(voiceMode && recognitionActive) {
+                                try { recognition.start(); } catch(e) {}
+                            }
+                        }, 500);
+                    }
                 };
                 
+                recognition.onend = function() {
+                    console.log("Recognition ended");
+                    // Restart if still in voice mode
+                    if(voiceMode && recognitionActive && currentStage === 20 && currentQuestion < questions.length) {
+                        setTimeout(() => {
+                            try { recognition.start(); } catch(e) {}
+                        }, 500);
+                    }
+                };
+                
+                // Start recognition
                 recognition.start();
-            } else {
+                
+            } catch(e) {
+                console.error("Voice recognition error:", e);
+                // Fallback to button mode
                 voiceMode = false;
-                toggleMode();
+                updateButtonMode();
             }
         }
         
         function handleVoiceInput(input) {
+            if(!voiceMode) return;
+            
             if(currentQuestion === 0) {
-                if(input.includes('yes')) handleAnswer('yes');
-                else if(input.includes('no')) handleAnswer('no');
+                if(input.includes('yes')) {
+                    handleAnswer('yes');
+                } else if(input.includes('no')) {
+                    handleAnswer('no');
+                }
             } else if(currentQuestion === 1) {
                 if(input.includes('i love harsh') || (input.includes('i') && input.includes('love') && input.includes('harsh'))) {
                     handleAnswer('i love harsh');
-                } else if(input.includes('no')) handleAnswer('no i dont');
+                } else if(input.includes('no')) {
+                    handleAnswer('no i dont');
+                }
             } else if(currentQuestion === 2) {
-                if(input.includes('yes')) handleAnswer('yes');
-                else if(input.includes('no')) handleAnswer('no');
+                if(input.includes('yes')) {
+                    handleAnswer('yes');
+                } else if(input.includes('no')) {
+                    handleAnswer('no');
+                }
             } else if(currentQuestion === 3) {
                 if(input.includes('he is the right man') || (input.includes('right') && input.includes('man'))) {
                     handleAnswer('he is the right man');
-                } else if(input.includes('maybe')) handleAnswer('maybe');
+                } else if(input.includes('maybe')) {
+                    handleAnswer('maybe');
+                }
             } else if(currentQuestion === 4) {
-                if(input.includes('yes but bigger')) handleAnswer('yes but bigger');
-                else if(input.includes('yes')) handleAnswer('yes');
+                if(input.includes('yes but bigger')) {
+                    handleAnswer('yes but bigger');
+                } else if(input.includes('yes')) {
+                    handleAnswer('yes');
+                }
             }
         }
         
         function handleAnswer(answer) {
+            console.log("Answer:", answer, "Question:", currentQuestion);
+            
+            // Stop recognition for a moment
+            if(recognition && voiceMode) {
+                try { recognition.stop(); } catch(e) {}
+                recognitionActive = false;
+            }
+            
             if(answer === 'yes' && currentQuestion === 0) {
                 showerEmojis(['✅'], 20);
                 currentQuestion++;
@@ -1364,6 +1580,21 @@
             if(currentQuestion < questions.length) {
                 document.getElementById('questionText').textContent = questions[currentQuestion].text;
                 document.getElementById('answerHint').textContent = questions[currentQuestion].hint;
+                
+                // Update buttons if in button mode
+                if(!voiceMode) {
+                    populateButtons();
+                }
+                
+                // Restart voice recognition if in voice mode
+                if(voiceMode) {
+                    recognitionActive = true;
+                    setTimeout(() => {
+                        if(voiceMode && recognition) {
+                            try { recognition.start(); } catch(e) {}
+                        }
+                    }, 500);
+                }
             }
         }
         
@@ -1428,6 +1659,10 @@
             document.getElementById('currentMessage').textContent = slideshowMessages[0];
             let buttonDiv = document.getElementById('buttonAnswers');
             if(buttonDiv) buttonDiv.style.display = 'none';
+            
+            // Initialize button mode container
+            let buttonContainer = document.getElementById('buttonModeContainer');
+            if(buttonContainer) buttonContainer.style.display = 'none';
         };
     </script>
 </body>
